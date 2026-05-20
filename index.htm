@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Punch Game</title>
+
+<style>
+
+body{
+  margin:0;
+  overflow:hidden;
+  background:#dcdcdc;
+  font-family:Arial, sans-serif;
+}
+
+/* 게임 화면 */
+.game-container{
+  width:100vw;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  perspective:1000px;
+}
+
+/* 업로드 버튼 */
+.upload-btn{
+  position:absolute;
+  top:20px;
+  left:20px;
+  background:white;
+  padding:12px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  z-index:100;
+  font-weight:bold;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.upload-btn input{
+  display:none;
+}
+
+/* 캐릭터 */
+.dog-boyfriend{
+  position:relative;
+  width:320px;
+  height:450px;
+  transition:transform 0.1s;
+}
+
+/* 머리 */
+.dog-boyfriend::before{
+  content:"";
+  position:absolute;
+  top:40px;
+  left:50%;
+  transform:translateX(-50%);
+  width:220px;
+  height:220px;
+  background:#9a9a9a;
+  border-radius:50%;
+  z-index:1;
+}
+
+/* 귀 */
+.ear{
+  position:absolute;
+  width:90px;
+  height:120px;
+  background:#8a8a8a;
+  border-radius:50%;
+  top:0;
+  z-index:0;
+}
+
+.left-ear{
+  left:40px;
+  transform:rotate(-20deg);
+}
+
+.right-ear{
+  right:40px;
+  transform:rotate(20deg);
+}
+
+/* 얼굴 이미지 */
+.face-image{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  z-index:2;
+  background:white;
+  border:5px solid white;
+}
+
+/* 몸 */
+.body{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:240px;
+  height:220px;
+  background:#8f8f8f;
+  border-radius:40px;
+}
+
+/* 펀치 버튼 */
+#punchBtn{
+  position:absolute;
+  right:30px;
+  bottom:30px;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  border:none;
+  background:red;
+  color:white;
+  font-size:22px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+}
+
+#punchBtn:active{
+  transform:scale(0.95);
+}
+
+/* 맞는 애니메이션 */
+.hit{
+  animation:hitAnim 0.2s;
+}
+
+@keyframes hitAnim{
+
+  0%{
+    transform:translateX(0) rotate(0deg);
+  }
+
+  25%{
+    transform:translateX(-20px) rotate(-5deg);
+  }
+
+  50%{
+    transform:translateX(20px) rotate(5deg);
+  }
+
+  100%{
+    transform:translateX(0) rotate(0deg);
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 업로드 버튼 -->
+<label class="upload-btn">
+  Upload Face
+  <input type="file" id="faceUpload" accept="image/*">
+</label>
+
+<!-- 게임 영역 -->
+<div class="game-container">
+
+  <!-- 강아지 인형탈 -->
+  <div class="dog-boyfriend" id="dogBoyfriend">
+
+    <!-- 얼굴 사진 -->
+    <img id="faceImage" class="face-image" src="" alt="face">
+
+    <!-- 귀 -->
+    <div class="ear left-ear"></div>
+    <div class="ear right-ear"></div>
+
+    <!-- 몸 -->
+    <div class="body"></div>
+
+  </div>
+
+</div>
+
+<!-- 펀치 버튼 -->
+<button id="punchBtn">PUNCH</button>
+
+<script>
+
+const uploadInput = document.getElementById("faceUpload");
+const faceImage = document.getElementById("faceImage");
+const punchBtn = document.getElementById("punchBtn");
+const dogBoyfriend = document.getElementById("dogBoyfriend");
+
+/* 사진 업로드 */
+uploadInput.addEventListener("change", (event)=>{
+
+  const file = event.target.files[0];
+
+  if(file){
+    const imageURL = URL.createObjectURL(file);
+    faceImage.src = imageURL;
+  }
+
+});
+
+/* 펀치 버튼 */
+punchBtn.addEventListener("click", ()=>{
+
+  // 맞는 애니메이션
+  dogBoyfriend.classList.add("hit");
+
+  // 화면 흔들림
+  document.body.animate(
+    [
+      { transform:"translateX(0px)" },
+      { transform:"translateX(-10px)" },
+      { transform:"translateX(10px)" },
+      { transform:"translateX(0px)" }
+    ],
+    {
+      duration:150
+    }
+  );
+
+  // 애니메이션 제거
+  setTimeout(()=>{
+    dogBoyfriend.classList.remove("hit");
+  },200);
+
+});
+
+</script>
+
+</body>
+</html>
