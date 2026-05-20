@@ -34,8 +34,11 @@ body{
 /* 업로드 버튼 */
 .upload-btn{
   position:absolute;
-  top:20px;
+
+  /* 왼쪽 아래로 이동 */
   left:20px;
+  bottom:20px;
+
   z-index:100;
   background:white;
   padding:14px 20px;
@@ -71,15 +74,24 @@ body{
   padding:12px 18px;
   border-radius:14px;
   box-shadow:0 4px 10px rgba(0,0,0,0.2);
+
+  /* 가로 정렬 */
   display:flex;
   align-items:center;
+  flex-direction:row;
+
   gap:10px;
+
   z-index:20;
+
+  /* 줄바꿈 방지 */
+  white-space:nowrap;
 }
 
 .crime-box span{
   font-weight:bold;
   font-size:18px;
+  white-space:nowrap;
 }
 
 .crime-box input{
@@ -90,7 +102,7 @@ body{
   background:transparent;
 }
 
-/* 캐릭터 흔들림 전체 */
+/* 캐릭터 흔들림 */
 .character{
   position:relative;
   width:100%;
@@ -131,7 +143,7 @@ body{
   pointer-events:none;
 }
 
-/* 얼굴 업로드 이미지 */
+/* 업로드 얼굴 */
 #faceImage{
   position:absolute;
   width:170px;
@@ -145,7 +157,7 @@ body{
   background:white;
   z-index:5;
 
-  /* 처음엔 숨김 */
+  /* 업로드 전 숨김 */
   display:none;
 }
 
@@ -228,16 +240,19 @@ body{
 
   <div class="character-wrapper">
 
-    <!-- 죄목 입력 -->
+    <!-- 죄목 -->
     <div class="crime-box">
+
       <span>죄목:</span>
+
       <input
         type="text"
         placeholder="예: 연락 안 봄"
       >
+
     </div>
 
-    <!-- 전체 캐릭터 -->
+    <!-- 캐릭터 -->
     <div class="character" id="character">
 
       <!-- 기본 캐릭터 -->
@@ -294,7 +309,7 @@ uploadInput.addEventListener("change", (event)=>{
 
     const imageURL = URL.createObjectURL(file);
 
-    /* 얼굴 이미지 적용 */
+    /* 얼굴 적용 */
     faceImage.src = imageURL;
 
     /* 업로드 후 표시 */
@@ -310,7 +325,7 @@ punchBtn.addEventListener("click", ()=>{
   /* 캐릭터 전체 흔들림 */
   character.classList.add("hit");
 
-  /* 손 애니메이션 재실행 */
+  /* 손 애니메이션 */
   punchHand.classList.remove("punch");
 
   void punchHand.offsetWidth;
