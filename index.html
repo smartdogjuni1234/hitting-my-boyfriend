@@ -31,24 +31,17 @@ body{
   overflow:hidden;
 }
 
-/* 업로드 버튼 영역 */
-.upload-area{
+/* 업로드 버튼 */
+.upload-btn{
   position:absolute;
   top:20px;
   left:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
   z-index:100;
-}
-
-/* 버튼 */
-.upload-btn{
   background:white;
-  padding:12px 18px;
-  border-radius:12px;
-  cursor:pointer;
+  padding:14px 20px;
+  border-radius:14px;
   font-weight:bold;
+  cursor:pointer;
   box-shadow:0 4px 10px rgba(0,0,0,0.2);
   transition:0.2s;
 }
@@ -64,18 +57,35 @@ body{
 /* 캐릭터 */
 .character-wrapper{
   position:relative;
-  width:420px;
-  height:420px;
+  width:450px;
+  height:450px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-/* 기본 캐릭터 이미지 */
-#characterImage{
+/* 기본 캐릭터 */
+#characterBase{
   width:100%;
   height:100%;
   object-fit:contain;
   user-select:none;
   pointer-events:none;
-  transition:transform 0.1s;
+}
+
+/* 얼굴 이미지 */
+#faceImage{
+  position:absolute;
+  width:160px;
+  height:160px;
+  object-fit:cover;
+  border-radius:50%;
+  top:105px;
+  left:50%;
+  transform:translateX(-50%);
+  border:6px solid white;
+  background:white;
+  z-index:5;
 }
 
 /* 피격 애니메이션 */
@@ -90,11 +100,11 @@ body{
   }
 
   25%{
-    transform:translateX(-25px) rotate(-5deg);
+    transform:translateX(-25px) rotate(-6deg);
   }
 
   50%{
-    transform:translateX(25px) rotate(5deg);
+    transform:translateX(25px) rotate(6deg);
   }
 
   100%{
@@ -103,41 +113,42 @@ body{
 
 }
 
-/* 손 이미지 */
+/* 손 */
 #punchHand{
   position:absolute;
-  width:180px;
-  right:-200px;
-  top:80px;
+  width:220px;
+  right:-260px;
+  top:60px;
   opacity:0;
   pointer-events:none;
   user-select:none;
+  z-index:10;
 }
 
 /* 펀치 애니메이션 */
 .punch{
-  animation:punchAnim 0.25s ease;
+  animation:punchAnim 0.28s ease;
 }
 
 @keyframes punchAnim{
 
   0%{
     opacity:0;
-    transform:translateX(0) rotate(-20deg);
+    transform:translateX(0) rotate(-15deg);
   }
 
-  15%{
+  10%{
     opacity:1;
   }
 
   50%{
     opacity:1;
-    transform:translateX(-220px) rotate(0deg);
+    transform:translateX(-320px) rotate(0deg);
   }
 
   100%{
     opacity:0;
-    transform:translateX(0) rotate(-20deg);
+    transform:translateX(0) rotate(-15deg);
   }
 
 }
@@ -158,7 +169,7 @@ body{
   cursor:pointer;
   box-shadow:0 6px 20px rgba(0,0,0,0.3);
   transition:0.1s;
-  z-index:50;
+  z-index:100;
 }
 
 #punchBtn:active{
@@ -170,22 +181,11 @@ body{
 
 <body>
 
-<!-- 업로드 버튼들 -->
-<div class="upload-area">
-
-  <!-- 캐릭터 업로드 -->
-  <label class="upload-btn">
-    Upload Character PNG
-    <input type="file" id="characterUpload" accept="image/*">
-  </label>
-
-  <!-- 손 업로드 -->
-  <label class="upload-btn">
-    Upload Punch Hand PNG
-    <input type="file" id="handUpload" accept="image/*">
-  </label>
-
-</div>
+<!-- 사진 업로드 버튼 -->
+<label class="upload-btn">
+  Upload Face
+  <input type="file" id="faceUpload" accept="image/*">
+</label>
 
 <!-- 게임 영역 -->
 <div class="game-container">
@@ -196,12 +196,19 @@ body{
     <!-- 기본 캐릭터 -->
     <!-- 프로젝트 폴더에 character.png 넣기 -->
     <img
-      id="characterImage"
+      id="characterBase"
       src="character.png"
       alt="character"
     >
 
-    <!-- 펀치 손 -->
+    <!-- 업로드 얼굴 -->
+    <img
+      id="faceImage"
+      src=""
+      alt="face"
+    >
+
+    <!-- 손 -->
     <!-- 프로젝트 폴더에 hand.png 넣기 -->
     <img
       id="punchHand"
@@ -219,16 +226,18 @@ body{
 <script>
 
 /* 요소 */
-const characterUpload = document.getElementById("characterUpload");
-const handUpload = document.getElementById("handUpload");
+const uploadInput = document.getElementById("faceUpload");
 
-const characterImage = document.getElementById("characterImage");
-const punchHand = document.getElementById("punchHand");
+const faceImage = document.getElementById("faceImage");
 
 const punchBtn = document.getElementById("punchBtn");
 
-/* 캐릭터 업로드 */
-characterUpload.addEventListener("change", (event)=>{
+const characterBase = document.getElementById("characterBase");
+
+const punchHand = document.getElementById("punchHand");
+
+/* 얼굴 업로드 */
+uploadInput.addEventListener("change", (event)=>{
 
   const file = event.target.files[0];
 
@@ -236,22 +245,7 @@ characterUpload.addEventListener("change", (event)=>{
 
     const imageURL = URL.createObjectURL(file);
 
-    characterImage.src = imageURL;
-
-  }
-
-});
-
-/* 손 업로드 */
-handUpload.addEventListener("change", (event)=>{
-
-  const file = event.target.files[0];
-
-  if(file){
-
-    const imageURL = URL.createObjectURL(file);
-
-    punchHand.src = imageURL;
+    faceImage.src = imageURL;
 
   }
 
@@ -261,9 +255,10 @@ handUpload.addEventListener("change", (event)=>{
 punchBtn.addEventListener("click", ()=>{
 
   /* 캐릭터 흔들림 */
-  characterImage.classList.add("hit");
+  characterBase.classList.add("hit");
+  faceImage.classList.add("hit");
 
-  /* 손 애니메이션 재실행 */
+  /* 손 애니메이션 재시작 */
   punchHand.classList.remove("punch");
 
   void punchHand.offsetWidth;
@@ -286,7 +281,8 @@ punchBtn.addEventListener("click", ()=>{
   /* 애니메이션 제거 */
   setTimeout(()=>{
 
-    characterImage.classList.remove("hit");
+    characterBase.classList.remove("hit");
+    faceImage.classList.remove("hit");
 
   },200);
 
